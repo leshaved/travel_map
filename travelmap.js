@@ -33,11 +33,11 @@ var myIcon = L.icon({
 });
 
 var markerClusters = L.markerClusterGroup();
-
+//<br/>
 for ( var i = 0; i < markers.length; ++i )
 {
-  var popup = markers[i].name  +
-              '<br/>' + markers[i].city;
+  var popup = markers[i].city  +
+              ' in ' + markers[i].country;
 
   var m = L.marker( [markers[i].lat, markers[i].lng], {icon: myIcon} )
                   .bindPopup( popup );
@@ -47,10 +47,14 @@ for ( var i = 0; i < markers.length; ++i )
 
 var layerCountries = L.geoJson(countries);
 var layerFlights = L.geoJson(flights, {
-color: 'red',
 weight: 2,
 opacity: 0.7,
-smoothFactor: 1
+smoothFactor: 1,
+style: function (feature) {
+        return {color: feature.properties.color};
+    },
+onEachFeature: function (feature, layer) {
+layer.bindPopup(feature.properties.description);}
 });
 
 	var baseLayers = {
