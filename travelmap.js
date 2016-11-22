@@ -45,7 +45,33 @@ for ( var i = 0; i < markers.length; ++i )
   markerClusters.addLayer( m );
 }
 
-var layerCountries = L.geoJson(countries);
+
+
+
+function getColor(d) {
+    return d > 500 ? '#A22A38' :
+           d > 100  ? '#AF3946' :
+           d > 29  ? '#BC4955' :
+           d > 13  ? '#FC4E2A' :
+           d > 6   ? '#FD8D3C' :
+           d > 4   ? '#FEB24C' :
+           d > 2   ? '#FED976' :
+                      '#FFEDA0';
+}
+
+function country_style(feature) {
+    return {
+        fillColor: getColor(feature.properties.days_been_to),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+var layerCountries = L.geoJson(countries,{style: country_style});
+
 var layerFlights = L.geoJson(flights, {
 weight: 2,
 opacity: 0.7,
