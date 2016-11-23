@@ -45,18 +45,15 @@ for ( var i = 0; i < markers.length; ++i )
   markerClusters.addLayer( m );
 }
 
-
-
-
 function getColor(d) {
-    return d > 500 ? '#A22A38' :
-           d > 100  ? '#AF3946' :
-           d > 29  ? '#BC4955' :
-           d > 13  ? '#FC4E2A' :
-           d > 6   ? '#FD8D3C' :
-           d > 4   ? '#FEB24C' :
-           d > 2   ? '#FED976' :
-                      '#FFEDA0';
+    return d > 500 ? '#6D0310' :
+           d > 100  ? '#811F2B' :
+           d > 29  ? '#963C46' :
+           d > 13  ? '#AB5962' :
+           d > 6   ? '#BF767D' :
+           d > 4   ? '#D49399' :
+           d > 2   ? '#E9B0B4' :
+                      '#FECDD0';
 }
 
 function country_style(feature) {
@@ -66,7 +63,7 @@ function country_style(feature) {
         opacity: 1,
         color: 'white',
         dashArray: '3',
-        fillOpacity: 0.7
+        fillOpacity: 0.4
     };
 }
 
@@ -97,5 +94,3 @@ layer.bindPopup(feature.properties.description);}
 	};
 
 L.control.layers(baseLayers,overlays).addTo(map);
-
-
