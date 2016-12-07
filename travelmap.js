@@ -1,5 +1,5 @@
 var map = L.map( 'map', {
-  center: [10.0, 5.0],
+  center: [15.0, 75.0],
   minZoom: 2,
   zoom: 2
 });
@@ -7,19 +7,16 @@ var map = L.map( 'map', {
 var osmLayer = L.tileLayer( 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
  subdomains: ['a','b','c']
+});
+
+var Esri_WorldTopoMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'
 }).addTo(map);
 
-var hereLayer = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/{type}/{mapID}/normal.day/{z}/{x}/{y}/{size}/{format}?app_id={app_id}&app_code={app_code}&lg={language}', {		
-	attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
-	subdomains: '1234',
-	mapID: 'newest',
-	app_id: 'IxfBHfHzyQ0leWeQwZiF',
-	app_code: 'pJbUwzAIsav4u8-Z7IJQfg',
-	base: 'base',	
-	type: 'maptile',
-	language: 'eng',
-	format: 'png8',
-	size: '256'
+var CartoDB_Positron = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+	subdomains: 'abcd',
+	maxZoom: 19
 });
 
 var myURL = jQuery( 'script[src$="travelmap.js"]' ).attr( 'src' ).replace( 'travelmap.js', '' );
@@ -67,30 +64,36 @@ function country_style(feature) {
     };
 }
 
-var layerCountries = L.geoJson(countries,{style: country_style});
+var layerCountries = L.geoJson(countries,{
+	style: country_style,
+onEachFeature: function (feature, layer) {
+layer.bindPopup(feature.properties.name + '. Been here for ' + feature.properties.days_been_to + ' days');} 
+});
+
+markerClusters.addTo(map);
 
 var layerFlights = L.geoJson(flights, {
-weight: 2,
+weight: 4,
 opacity: 0.7,
 smoothFactor: 1,
 style: function (feature) {
         return {color: feature.properties.color};
     },
 onEachFeature: function (feature, layer) {
-layer.bindPopup(feature.properties.description);}
+layer.bindPopup(feature.properties.description )}
 });
 
-	var baseLayers = {
-		"OpenStreetMap" : osmLayer,
-		"Here Map": hereLayer
-	};
-		
+var baseLayers = {
+		"Esri WorldTopoMap": Esri_WorldTopoMap,
+		"OpenStreetMap" : osmLayer,		
+		"CartoDB Map": CartoDB_Positron
+};
 
-	var overlays = {
+var overlays = {
 		"Cities": markerClusters,
 		"Countries" : layerCountries,
 		"Flights": layerFlights
 		
-	};
+};
 
 L.control.layers(baseLayers,overlays).addTo(map);
